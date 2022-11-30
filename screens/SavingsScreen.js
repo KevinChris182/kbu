@@ -20,6 +20,7 @@ import SavingsCard from "../components/SavingsCard";
 import { Dimensions, Animated } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import Tagihan from "./Tagihan";
 
 const FirstRoute = () => (
   <Center flex={1}>
@@ -27,7 +28,7 @@ const FirstRoute = () => (
   </Center>
 );
 
-const SecondRoute = () => <Center flex={1}>Tagihan</Center>;
+const SecondRoute = () => <Center flex={1}><Tagihan/></Center>;
 
 const initialLayout = {
   width: Dimensions.get("window").width,
@@ -92,7 +93,7 @@ const Savings = () => {
   }, []);
 
   const handlePagination = () => {
-    console.log(state.savingsMeta?.next);
+    // console.log(state.savingsMeta?.next);
     if (
       state.savingsMeta &&
       state.savingsMeta.next !== null &&

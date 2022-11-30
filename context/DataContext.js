@@ -31,6 +31,16 @@ const dataReducer = (state, action) => {
       return { ...state, savings: [] };
     case "add_savings_meta":
       return { ...state, savingsMeta: action.payload };
+    case "add_tagihan":
+      return { ...state, tagihan: [...state.tagihan, ...action.payload] };
+    case "clear_tagihan":
+      return { ...state, tagihan: [] };
+    case "add_tagihan_meta":
+      return { ...state, tagihanMeta: action.payload };
+    case "get_detail_tagihan":
+      return { ...state, detailTagihan: action.payload}
+    case "clear_detail_tagihan":
+      return { ...state, detailTagihan: []}
     default:
       return state;
   }
@@ -395,6 +405,69 @@ const setLoading = (dispatch) => (payload) => {
   dispatch({ type: "set_loading", payload });
 };
 
+const getDataTagihan = (dispatch)=>async()=>{
+  try {
+    dispatch({type: "set_loading",payload:true})
+    dispatch({ type: "clear_tagihan", payload: true });
+    dispatch({ type: "clear_detail_tagihan", payload: true });
+    const response = await AuthApi.get(`/api/v1/tagihan-simpanan`, {
+      headers: {
+        Accept: "application/json",
+      }
+    });
+    // console.log(response.data.data)
+    dispatch({type: "add_tagihan", payload: response.data.data})
+    dispatch({type: "add_tagihan_meta", payload: response.data.links})
+    dispatch({type: "set_loading", payload: false})
+  } catch (error) {
+    dispatch({type: "set_loading", payload: false})
+    if(error.response.status === 401) {
+      await SecureStore.deleteItemAsync("token");
+    }
+    dispatch({type: "add_error", payload: "list tagihan gagal. silahkan coba kembali"});
+  }
+}
+
+const getMoreTagihan = (dispatch) => async (page) => {
+  try {
+    dispatch({type: "set_more_loading", payload: true})
+    console.log('data tagihan', page)
+    const response = await AuthApi.get(`/api/v1/tagihan-simpanan?page${page}`, {
+      header: {
+        Accept: "application/json"
+      }
+    })
+    dispatch({type: "add_tagihan", payload: response.data.data})
+    dispatch({type: "add_tagihan_meta", payload: response.data.links})
+    dispatch({type: "set_loading", payload: false})
+  } catch (error) {
+    dispatch({type: "set_loading", payload: false})
+    if(error.response.status === 401) {
+      await SecureStore.deleteItemAsync("token")
+    }
+    dispatch({type: "add_error", payload: "list tagihan gagal. silahkan coba kembali"})
+  }
+}
+
+const getDetailsTagihan = (dispatch) => async (id) => {
+  try {
+    dispatch({type: "set_loading", payload: true})
+    const {data} = await AuthApi.get(`/api/v1/tagihan-simpanan/detail/${id}`, {
+      headers: {
+        Accept: "application/json"
+      }
+    })
+    dispatch({type: "get_detail_tagihan", payload: data.data})
+    dispatch({type: "set_loading", payload: false})
+  } catch (error) {
+    dispatch({type: "set_loading", payload: false})
+    if(error.response.status === 401) {
+      await SecureStore.deleteItemAsync("token")
+    }
+    dispatch({type: "add_error", payload: "tagihan tidak ditemukan. silahkan coba kembali"})
+  }
+}
+
 export const { Provider, Context } = createDataContext(
   dataReducer,
   {
@@ -409,6 +482,9 @@ export const { Provider, Context } = createDataContext(
     editResign,
     getSavings,
     getMoreSavings,
+    getDataTagihan,
+    getMoreTagihan,
+    getDetailsTagihan,
     setLoading,
     confirmSavings,
   },
