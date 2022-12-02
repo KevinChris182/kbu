@@ -17,7 +17,7 @@ import EditMemberScreen from "../screens/EditMemberScreen";
 import ResignScreen from "../screens/ResignScreeen";
 import EditResignScreen from "../screens/EditResignScreen";
 import UploadSavingsScreen from "../screens/UploadSavingsScreen";
-import DetailTagihan from "../screens/DetailTagihan";
+import DetailTagihan from "../screens/DetailTagihanScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -36,11 +36,11 @@ const Member = () => {
   );
 };
 
-const Tagihan = () => {
+const SavingRoute = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen 
-        name="Savings" 
+        name="Saving" 
         component={SavingsScreen} 
         options={{
           headerShown: false,
@@ -93,9 +93,8 @@ function MyTabs() {
       />
       <Tab.Screen
         name="Savings"
-        component={Tagihan}
+        component={SavingRoute}
         options={{
-          
           tabBarLabel: "Simpan Pinjam",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons

@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Context as DataContext } from "../context/DataContext";
 import { Heading, Text, VStack, HStack, Badge, Box, Image, Button, Pressable } from "native-base";
 import { useNavigation } from "@react-navigation/native";
+import { ActivityIndicator } from "react-native";
 
 export const currencyFormatter = (value, options) => {
   const defaultOptions = {
@@ -72,64 +73,72 @@ const Tagihan = () => {
     getDataTagihan();
   }, []);
   return (
-    <FlatList
-      style={[styles.tagihanWrapper]}
-      data={state.tagihan}
-      contentContainerStyle={{flexGrow: 1}}
-      ItemSeparatorComponent={() => (
-        <View backgroundColor={"gray.200"} style={{marginTop: 7}}></View>
-      )}
-      ListHeaderComponent={() => (
-        <HStack p="5">
-          <Heading>List Tagihan</Heading>
-        </HStack>
-      )}
-      ListEmptyComponent={renderEmpty}
-      initialNumToRender={1}
-      keyExtractor={(item, index) => index}
-      onEndReachedThreshold={0.1}
-      onEndReached={() => {
-        if (!onEndReachedCalledDuringMomentum) {
-          handlePagination();
-          setOnEndReachedCalledDuringMomentum(true);
-        }
-      }}
-      onMomentumScrollBegin={() => {
-        setOnEndReachedCalledDuringMomentum(false);
-      }}
-      renderItem={({ item }) => (
-        <Pressable onPress={()=>navigation.navigate('TagihanDetail', {id: item.id, anggota_id: item.anggota_id})} >
-          {({isPressed}) => (
-            <HStack space="2.5" p={"5"} h={"100"} bg={isPressed ? 'coolGray.200' : 'white'} shadow="6">
-              <VStack w='1/2' >
-              <Badge
-                variant="solid"
-                colorScheme={item.type === 1 ? "success" : "info"}
-                alignSelf={"flex-start"}
-                borderRadius={"4"}
-              >
-                {item.type === 1
-                  ? "SIMPANAN POKOK"
-                  : item.type === 2
-                  ? "SIMPANAN WAJIB"
-                  : "SIMPANAN SUKARELA"}
-              </Badge>
-              <Text>Sumber: {item.source}</Text>
-              <Text size={"sm"} italic>
-                {item.bulan} - {item.tahun}
-              </Text>
-              </VStack>
-              <Text
-                style={styles.currencyStyle}
-                fontSize= {"md"}
-              >
-                Rp.{currencyFormatter(Number(item.amount.split(".")[0]))}
-              </Text>
+    <>
+      {state.isLoading ? (
+        <View justifyContent={"center"} height={"100%"}>
+          <ActivityIndicator size="large" color="#1a0ccd" />
+        </View>
+      ) : (
+        <FlatList
+          style={[styles.tagihanWrapper]}
+          data={state.tagihan}
+          contentContainerStyle={{flexGrow: 1}}
+          ItemSeparatorComponent={() => (
+            <View backgroundColor={"gray.200"} style={{marginTop: 7}}></View>
+          )}
+          ListHeaderComponent={() => (
+            <HStack p="5">
+              <Heading>List Tagihan</Heading>
             </HStack>
           )}
-        </Pressable>
+          ListEmptyComponent={renderEmpty}
+          initialNumToRender={1}
+          keyExtractor={(item, index) => item.id + " with idx "+index}
+          onEndReachedThreshold={0.1}
+          onEndReached={() => {
+            if (!onEndReachedCalledDuringMomentum) {
+              handlePagination();
+              setOnEndReachedCalledDuringMomentum(true);
+            }
+          }}
+          onMomentumScrollBegin={() => {
+            setOnEndReachedCalledDuringMomentum(false);
+          }}
+          renderItem={({ item }) => (
+            <Pressable onPress={()=>navigation.navigate('TagihanDetail', {id: item.id, anggota_id: item.anggota_id})} >
+              {({isPressed}) => (
+                <HStack space="2.5" p={"5"} h={"100"} bg={isPressed ? 'coolGray.200' : 'white'} shadow="6">
+                  <VStack w='1/2' >
+                  <Badge
+                    variant="solid"
+                    colorScheme={item.type === 1 ? "success" : "info"}
+                    alignSelf={"flex-start"}
+                    borderRadius={"4"}
+                  >
+                    {item.type === 1
+                      ? "SIMPANAN POKOK"
+                      : item.type === 2
+                      ? "SIMPANAN WAJIB"
+                      : "SIMPANAN SUKARELA"}
+                  </Badge>
+                  <Text>Sumber: {item.source}</Text>
+                  <Text size={"sm"} italic>
+                    {item.bulan} - {item.tahun}
+                  </Text>
+                  </VStack>
+                  <Text
+                    style={styles.currencyStyle}
+                    fontSize= {"md"}
+                  >
+                    Rp.{currencyFormatter(Number(item.amount.split(".")[0]))}
+                  </Text>
+                </HStack>
+              )}
+            </Pressable>
+          )}
+        />
       )}
-    />
+    </>
   );
 };
 

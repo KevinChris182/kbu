@@ -342,7 +342,6 @@ const getSavings = (dispatch) => async () => {
 const getMoreSavings = (dispatch) => async (page) => {
   try {
     dispatch({ type: "set_more_loading", payload: true });
-    console.log("get simpanan lagi", page);
     const response = await AuthApi.get(`/api/v1/simpanan?page=${page}`, {
       headers: {
         Accept: "application/json",
@@ -452,6 +451,7 @@ const getMoreTagihan = (dispatch) => async (page) => {
 const getDetailsTagihan = (dispatch) => async (id) => {
   try {
     dispatch({type: "set_loading", payload: true})
+    dispatch({type: "get_detail_tagihan", payload: false})
     const {data} = await AuthApi.get(`/api/v1/tagihan-simpanan/detail/${id}`, {
       headers: {
         Accept: "application/json"

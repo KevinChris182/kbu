@@ -20,7 +20,7 @@ import SavingsCard from "../components/SavingsCard";
 import { Dimensions, Animated } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import Tagihan from "./Tagihan";
+import Tagihan from "./TagihanScreen";
 
 const FirstRoute = () => (
   <Center flex={1}>
@@ -212,6 +212,7 @@ const SavingsScreen = ({ navigation }) => {
                 flex={1}
                 alignItems="center"
                 p="3"
+                key={route+" "+i}
               >
                 <Pressable
                   onPress={() => {
