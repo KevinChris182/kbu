@@ -22,11 +22,14 @@ import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import Tagihan from "./TagihanScreen";
 
-const FirstRoute = () => (
-  <Center flex={1}>
-    <Savings />
-  </Center>
-);
+const FirstRoute = ({route, jumpTo, position}) => {
+  console.log(route, jumpTo, position)
+  return(
+    <Center flex={1}>
+      <Savings />
+    </Center>
+  )
+};
 
 const SecondRoute = () => <Center flex={1}><Tagihan/></Center>;
 
@@ -37,7 +40,6 @@ const renderScene = SceneMap({
   first: FirstRoute,
   second: SecondRoute,
 });
-
 const Savings = () => {
   const navigation = useNavigation();
   const windowHeight = Dimensions.get("window").height;
@@ -175,7 +177,7 @@ const Savings = () => {
 const SavingsScreen = ({ navigation }) => {
   {
     const [index, setIndex] = React.useState(0);
-    const [routes] = React.useState([
+    const [routes, setRoutes] = React.useState([
       {
         key: "first",
         title: "Simpanan",
@@ -187,6 +189,7 @@ const SavingsScreen = ({ navigation }) => {
     ]);
 
     const renderTabBar = (props) => {
+      console.log(props)
       const inputRange = props.navigationState.routes.map((x, i) => i);
       return (
         <Box flexDirection="row">
@@ -216,8 +219,31 @@ const SavingsScreen = ({ navigation }) => {
               >
                 <Pressable
                   onPress={() => {
-                    console.log(i);
+                    // console.log(route);
                     setIndex(i);
+                    if(i===1){
+                      setRoutes([
+                        {
+                          key: "second",
+                          title: "Simpanan",
+                        },
+                        {
+                          key: "first",
+                          title: "Tagihan",
+                        },
+                      ])
+                    } else {
+                      setRoutes([
+                        {
+                          key: "first",
+                          title: "Simpanan",
+                        },
+                        {
+                          key: "second",
+                          title: "Tagihan",
+                        },
+                      ])
+                    }
                   }}
                 >
                   <Animated.Text
@@ -239,8 +265,8 @@ const SavingsScreen = ({ navigation }) => {
       <SafeAreaView flex={1}>
         <TabView
           navigationState={{
-            index,
-            routes,
+            index: index,
+            routes: routes,
           }}
           renderScene={renderScene}
           renderTabBar={renderTabBar}
