@@ -49,6 +49,9 @@ const SavingRoute = () => {
       <Stack.Screen 
         name="TagihanDetail"
         component={DetailTagihan}
+        options={{
+          headerTitle: "Detail Tagihan"
+        }}
       />
     </Stack.Navigator>
   )

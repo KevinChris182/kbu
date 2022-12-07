@@ -69,7 +69,7 @@ const Tagihan = () => {
     }
   };
 
-  useEffect(() => {
+  React.useLayoutEffect(() => {
     getDataTagihan();
   }, []);
   return (

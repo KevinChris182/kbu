@@ -77,6 +77,7 @@ const getData = (dispatch) => async () => {
 
 const getMemberData = (dispatch) => async () => {
   try {
+    dispatch({ type: "set_loading", payload: true });
     const response = await AuthApi.get("/api/v1/anggota", {
       headers: {
         Accept: "application/json",
@@ -451,7 +452,7 @@ const getMoreTagihan = (dispatch) => async (page) => {
 const getDetailsTagihan = (dispatch) => async (id) => {
   try {
     dispatch({type: "set_loading", payload: true})
-    dispatch({type: "get_detail_tagihan", payload: false})
+    dispatch({type: "get_detail_tagihan", payload: {}})
     const {data} = await AuthApi.get(`/api/v1/tagihan-simpanan/detail/${id}`, {
       headers: {
         Accept: "application/json"

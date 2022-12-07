@@ -1,38 +1,49 @@
-import { Box, Text, Center, Flex, Heading, HStack, Spacer, VStack, View } from 'native-base';
-import { useContext, useEffect, useLayoutEffect } from 'react';
-import { ActivityIndicator } from 'react-native';
-import {Context as DataContext} from '../context/DataContext'
+import {
+  Box,
+  Text,
+  Center,
+  Flex,
+  Heading,
+  HStack,
+  Spacer,
+  VStack,
+  View,
+} from "native-base";
+import { useState } from "react";
+import { useContext, useEffect, useLayoutEffect } from "react";
+import {
+  ActivityIndicator,
+  Dimensions,
+  SafeAreaView,
+  StyleSheet,
+  Text as TextRN,
+} from "react-native";
+import { Context as DataContext } from "../context/DataContext";
 
-const DetailTagihan = ({route}) => {
-  const {id} = route.params;  
-  const {state, getDetailsTagihan} = useContext(DataContext)
-  const {state: stateMember, getMemberData } = useContext(DataContext)
-  
-  useLayoutEffect(()=> {
-    getDetailsTagihan(id)
-    getMemberData()
-  }, [id])
+const DetailTagihan = ({ route }) => {
+  const { id } = route.params;
+  const { state, getDetailsTagihan } = useContext(DataContext);
+  const { state: stateMember } = useContext(DataContext);
+  useLayoutEffect(() => {
+    getDetailsTagihan(id);
+  }, [id]);
   return (
     <>
-      {state.isLoading && stateMember.isLoading && !state.detailTagihan ? (
-        <View justifyContent={"center"} height={"100%"}>
-          <ActivityIndicator size="large" color="#1a0ccd" />
-        </View>
-      ) : (
-        <Box h={"100%"} justifyContent="center">
-          <Box bg="white" p={"5"} rounded={"lg"} shadow="3">
-            <Center>
-              <Heading>Detail Tagihan</Heading>
-            </Center>
+      <SafeAreaView>
+        <Box h={"100%"} justifyContent="center" bg="white">
+          {state.isLoading ? (
+            <View justifyContent={"center"} height={"100%"}>
+              <ActivityIndicator size="large" color="#1a0ccd" />
+            </View>
+          ):(
+          <Box p={"5"}>
             <Center mt={"12"} mb={"10"}>
-              <Text fontSize={"xl"} fontWeight={"bold"} >
-                Hai {stateMember.member.anggota_name}
+              <Text fontSize={"xl"} fontWeight={"bold"}>
+                {stateMember.member.anggota_name}
               </Text>
-              <Text>
-                Berikut adalah detail tagihan anda
-              </Text>
+              <Text py={"2"}>Berikut adalah detail tagihan anda</Text>
             </Center>
-            <HStack p="2" backgroundColor={"light.200"}>
+            <HStack p="2" backgroundColor={"light.200"} mt={"10"}>
               <Text fontSize={"md"} flex="1">
                 Bulan/Tahun
               </Text>
@@ -57,14 +68,27 @@ const DetailTagihan = ({route}) => {
               </Text>
             </HStack>
             <Center mt={"24"} mb={"7"}>
-              <Text fontSize={"lg"} fontWeight={"semibold"}>Jumlah Tagihan</Text>
-              <Heading py={"3"}>Rp. {state.detailTagihan.amount},00</Heading>
+              <Text fontSize={"lg"} fontWeight={"semibold"}>
+                Jumlah Tagihan
+              </Text>
+              <Heading style={style.currencyStyle}>
+                Rp. {state.detailTagihan.amount},00
+              </Heading>
             </Center>
           </Box>
+          )}
         </Box>
-      )}
+      </SafeAreaView>
     </>
-  )
-}
+  );
+};
 
-export default DetailTagihan
+const style = StyleSheet.create({
+  currencyStyle: {
+    paddingVertical: 10,
+    color: "#1a0ccd",
+    fontWeight: "bold",
+  },
+});
+
+export default DetailTagihan;
