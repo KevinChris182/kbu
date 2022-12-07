@@ -20,22 +20,43 @@ import SavingsCard from "../components/SavingsCard";
 import { Dimensions, Animated } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import Tagihan from "./TagihanScreen";
 
-const FirstRoute = () => (
-  <Center flex={1}>
-    <Savings />
-  </Center>
-);
+const SavingsScreen = () => {
+  const tabMenu = [{key: "first", title: "Simpanan"}, {key: "second", title: "Tagihan"}]
+  const [active, setActive] = React.useState("first")
+  
+  const handleChangeTabbar = (idx, element) => {
+    idx === 0 ? setActive(element.key) : setActive(element.key)
+  }
 
-const SecondRoute = () => <Center flex={1}>Tagihan</Center>;
-
-const initialLayout = {
-  width: Dimensions.get("window").width,
-};
-const renderScene = SceneMap({
-  first: FirstRoute,
-  second: SecondRoute,
-});
+  return (
+    <SafeAreaView>
+      <Box flexDirection={"row"}>
+        {tabMenu.map((e, i) => {
+          return (
+            <Pressable 
+              key={`key ${e.key}`} 
+              borderBottomWidth={"3"}
+              borderColor={active === e.key ? "cyan.500" : useColorModeValue("coolGray.200", "gray.400") }
+              flex={1} 
+              alignItems="center" 
+              p="3"
+              onPress={()=>handleChangeTabbar(i, e)}>
+              <Animated.Text style={{color: `${active !== e.key ? 'gray': 'black'}`}}>
+                {e.title}
+              </Animated.Text>
+            </Pressable>
+          )
+        })}
+      </Box>
+      
+      <View width={Dimensions.get("window").width}>
+        {active === "first" ? (<Savings/>) : <Tagihan/>}
+      </View>
+    </SafeAreaView>
+  )
+}
 
 const Savings = () => {
   const navigation = useNavigation();
@@ -86,13 +107,11 @@ const Savings = () => {
     </View>
   );
 
-  useEffect(() => {
+  React.useLayoutEffect(() => {
     getSavings();
-    console.log(state.isLoading);
   }, []);
 
   const handlePagination = () => {
-    console.log(state.savingsMeta?.next);
     if (
       state.savingsMeta &&
       state.savingsMeta.next !== null &&
@@ -169,85 +188,6 @@ const Savings = () => {
       )}
     </>
   );
-};
-
-const SavingsScreen = ({ navigation }) => {
-  {
-    const [index, setIndex] = React.useState(0);
-    const [routes] = React.useState([
-      {
-        key: "first",
-        title: "Simpanan",
-      },
-      {
-        key: "second",
-        title: "Tagihan",
-      },
-    ]);
-
-    const renderTabBar = (props) => {
-      const inputRange = props.navigationState.routes.map((x, i) => i);
-      return (
-        <Box flexDirection="row">
-          {props.navigationState.routes.map((route, i) => {
-            const opacity = props.position.interpolate({
-              inputRange,
-              outputRange: inputRange.map((inputIndex) =>
-                inputIndex === i ? 1 : 0.5
-              ),
-            });
-            const color =
-              index === i
-                ? useColorModeValue("#000", "#e5e5e5")
-                : useColorModeValue("#1f2937", "#a1a1aa");
-            const borderColor =
-              index === i
-                ? "cyan.500"
-                : useColorModeValue("coolGray.200", "gray.400");
-            return (
-              <Box
-                borderBottomWidth="3"
-                borderColor={borderColor}
-                flex={1}
-                alignItems="center"
-                p="3"
-              >
-                <Pressable
-                  onPress={() => {
-                    console.log(i);
-                    setIndex(i);
-                  }}
-                >
-                  <Animated.Text
-                    style={{
-                      color,
-                    }}
-                  >
-                    {route.title}
-                  </Animated.Text>
-                </Pressable>
-              </Box>
-            );
-          })}
-        </Box>
-      );
-    };
-
-    return (
-      <SafeAreaView flex={1}>
-        <TabView
-          navigationState={{
-            index,
-            routes,
-          }}
-          renderScene={renderScene}
-          renderTabBar={renderTabBar}
-          onIndexChange={setIndex}
-          initialLayout={initialLayout}
-        />
-      </SafeAreaView>
-    );
-  }
 };
 
 export default SavingsScreen;

@@ -17,6 +17,7 @@ import EditMemberScreen from "../screens/EditMemberScreen";
 import ResignScreen from "../screens/ResignScreeen";
 import EditResignScreen from "../screens/EditResignScreen";
 import UploadSavingsScreen from "../screens/UploadSavingsScreen";
+import DetailTagihan from "../screens/DetailTagihanScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -34,6 +35,27 @@ const Member = () => {
     </Stack.Navigator>
   );
 };
+
+const SavingRoute = () => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen 
+        name="Saving" 
+        component={SavingsScreen} 
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen 
+        name="TagihanDetail"
+        component={DetailTagihan}
+        options={{
+          headerTitle: "Detail Tagihan"
+        }}
+      />
+    </Stack.Navigator>
+  )
+}
 
 function MyTabs() {
   return (
@@ -74,7 +96,7 @@ function MyTabs() {
       />
       <Tab.Screen
         name="Savings"
-        component={SavingsScreen}
+        component={SavingRoute}
         options={{
           tabBarLabel: "Simpan Pinjam",
           tabBarIcon: ({ color, size }) => (
@@ -86,6 +108,20 @@ function MyTabs() {
           ),
         }}
       />
+      {/* <Tab.Screen
+        name="Savings"
+        component={SavingsScreen}
+        options={{
+          tabBarLabel: "Simpan Pinjam",
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons
+              name="scale-balance"
+              color={color}
+              size={size}
+            />
+          ),
+        }}
+      /> */}
       <Tab.Screen
         name="Investment"
         component={InvestmentScreen}
